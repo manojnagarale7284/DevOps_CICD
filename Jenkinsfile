@@ -23,8 +23,8 @@ pipeline{
 
 		stage("SONARQUBE Analysis") {
 			steps {
-			    withSonarQubeEnv('sonarserver') {
-				  sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=DevOps-CICD \
+			   withSonarQubeEnv('sonarserver') {
+				  sh ''' $SCANNER_HOME/bin/sonar-scanner -X  -Dsonar.projectName=DevOps-CICD \
 						 -Dsonar.javaBinaries=. \
                                                  -Dsonar.host.url=http:http://139.59.44.164:9000/
                                                  -Dsonar.sonar.login='3e1e60ae2feffbabaaf3722c04b69016143ac723'
