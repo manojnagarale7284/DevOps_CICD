@@ -7,6 +7,7 @@ pipeline{
 	  }
 	environment {
 		SCANNER_HOME =  tool 'sonar-scanner'
+            }
 	stages {
         stage("GIT CHECKOUT") {
 	       steps {
@@ -40,3 +41,5 @@ pipeline{
 		      sh 'mvn clean install'
 			  }
 			}  
+}
+}
