@@ -23,7 +23,7 @@ pipeline{
 
 		stage("SONARQUBE Analysis") {
 			steps {
-			    withSonarQubeEnv('sonar-scanner') {
+			    withSonarQubeEnv('sonarserver') {
 				  sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=DevOps-CICD \
 						 -Dsonar.javaBinaries= . \
 						 -Dsonar.projectKey=DevOps-CICD '''
