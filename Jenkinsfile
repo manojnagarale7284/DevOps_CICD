@@ -1,32 +1,42 @@
-pipeline {
-    agent any
-    tools{
-        jdk 'jdk11'
-        maven 'maven3'
-    }
+pipeline{
+   agent any
    
+   tools {
+      jdk 'jdk11'
+	  maven 'maven3'
+	  }
+	environment {
+		SCANNER_HOME =  tool 'sonar-scanner'
+	stages {
+        stage("GIT CHECKOUT") {
+	       steps {
+		    git branch: 'main', changelog: false,  poll:false, url: 'https://github.com/manojnagarale7284/DevOps_CICD.git'
+		    }
+		   }
+   
+        stage ("Compile Code") {
+			steps {
+			   sh "mvn clean compile"
+			   }
+			 }
 
-    stages {
-        stage('git-checkout') {
-            steps {
-                git branch: 'main', changelog: false, poll: false, url: 'https://github.com/jaiswaladi246/Devops-CICD.git'
+		stage("SONARQUBE Analysis") {
+			steps {
+			    withSonarQubeEnv('sonar-scanner') {
+				  sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=DevOps-CICD \
+						 -Dsonar.javaBinaries= . \
+						 -Dsonar.projectKey=DevOps-CICD '''
+                        }						 
+	             } 
             }
-        }
-        
-        stage('Code-Compile') {
-            steps {
-               sh "mvn clean compile"
-            }
-        }
-        
-       	
-	
-        stage('Code-Build') {
-            steps {
-               sh "mvn clean install"
-            }
-        }
-       
-        
-    }
-}
+		stage("TRIVY SCAN") {
+			steps {
+				sh "trivy fs --secirity-checks viln,config /var/lib/jenkins/workspace/CICD"
+				}
+			}
+
+        stage("CODE BUILD") {
+		   steps {
+		      sh 'mvn clean install'
+			  }
+			}  
